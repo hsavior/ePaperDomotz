@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Editor</title>
+</head>
+<body>
+    <h1>Configuration Editor</h1>
+    <form method="post" action="/update_config">
+        <label for="api_key">API Key:</label>
+        <input type="password" name="api_key" value="{{ config.api_key }}" style="width: 400px;"><br>
+
+        <label for="agent_id">Agent ID:</label>
+        <input type="text" name="agent_id" value="{{ config.agent_id }}" style="width: 300px;"><br>
+
+        <label for="api_url">API URL:</label>
+        <input type="text" name="api_url" value="{{ config.api_url }}" style="width: 300px;"><br>
+
+        <input type="submit" value="Save">
+    </form>
+</body>
+</html>

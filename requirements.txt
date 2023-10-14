@@ -1,0 +1,4 @@
+pyasn1==0.4.8
+waveshare-epaper==1.2.0
+pysnmp==4.4.12
+netifaces==0.11.0
