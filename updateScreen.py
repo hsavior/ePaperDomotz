@@ -1,5 +1,11 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
+#
+# Author: Henrique Salvador
+# Description: Updates ePaper with Domotz API data (Devices Online, Important Devices Down, Speedtest Upload and Download, Uptime for the last 30 days and current IP Address.
+# Assistant: ChatGPT by OpenAI (https://www.openai.com)
+#
+
 import sys
 import os
 import time
