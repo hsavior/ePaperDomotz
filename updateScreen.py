@@ -68,6 +68,11 @@ def fetch_speeds():
         print("API key and/or Agent ID and/or API URL not found in the configuration file.")
         return None, None
 
+def dateNow():
+    now = datetime.now()
+#    now = now.strftime('%b/%d/%y %I:%M %p') # Oct/11/23 10:53 PM
+    now = now.strftime('%d/%b/%y %H:%M') # 11/Oct/23 22:53
+    return now
 
 def uptime():
     days_ago = 30
@@ -214,13 +219,16 @@ def fetch_data():
         speedUp = 'N/A'
 
     status_value = status()
-    stat = status_value if status_value is not None else 'UNKNOWN'
+    stat = status_value if status_value is not None else 'N/A'
 
     ip_value = localip()
-    ip_now = ip_value if ip_value is not None else 'UNKNOWN'
+    ip_now = ip_value if ip_value is not None else 'N/A'
 
     uptime_now = uptime()
-    uptime_now = f'{uptime_now}' if uptime_now is not None else 'UNKNOWN'
+    uptime_now = f'{uptime_now}' if uptime_now is not None else 'N/A'
+
+    now = dateNow()
+    now = f'{now}' if now is not None else 'N/A'
 
     devices_data = devices()
     if devices_data is not None:
@@ -231,7 +239,7 @@ def fetch_data():
 
     return (
         speedDown, speedUp, stat, ip_now,
-        total_online, important_down, uptime_now
+        total_online, important_down, uptime_now, now
     )
 
 def draw_on_image(image_black, image_red, data, fonts):
@@ -246,19 +254,20 @@ def draw_on_image(image_black, image_red, data, fonts):
     (
         devices_online, important_devices_offline, download_label,
         upload_label, download_speed, upload_speed,
-        status, connection_icon, ip, uptime_now
+        status, connection_icon, ip, uptime_now, now
     ) = data
 
     # Draw text and data on images at the exact positions
     draw_black.text((30, 0), 'Devices Online:', font=font14, fill=0)  # Black text
     draw_black.text((30, 14), 'Important Devices Down:', font=font14, fill=0)  # Black text
-    draw_black.text((2, 38), 'Download:', font=font18, fill=0)  # Black text
-    draw_black.text((2, 58), 'Upload:', font=font18, fill=0)  # Black text
-    draw_black.text((2, 78), 'Uptime:', font=font18, fill=0)  # Black text
+    draw_black.text((2, 34), 'Download:', font=font18, fill=0)  # Black text
+    draw_black.text((2, 54), 'Upload:', font=font18, fill=0)  # Black text
+    draw_black.text((2, 74), 'Uptime:', font=font18, fill=0)  # Black text
+    draw_black.text((2, 100), f'Last Update: {now}', font=font10, fill=0)  # Black text
 
-    draw_red.text((90, 38), download_speed, font=font18, fill=0)  # Red text
-    draw_red.text((66, 58), upload_speed, font=font18, fill=0)  # Red text
-    draw_red.text((66, 78), f'{uptime_now}%', font=font18, fill=0)  # Red text
+    draw_red.text((90, 34), download_speed, font=font18, fill=0)  # Red text
+    draw_red.text((66, 54), upload_speed, font=font18, fill=0)  # Red text
+    draw_red.text((66, 74), f'{uptime_now}%', font=font18, fill=0)  # Red text
     draw_red.text((147, 0), devices_online, font=font14, fill=0)  # Devices Online
     draw_red.text((210, 14), important_devices_offline, font=font14, fill=0)  # Important Devices Offline
 
@@ -274,7 +283,7 @@ def draw_on_image(image_black, image_red, data, fonts):
     draw_red.text((63, 110), f'http://{ip}:5000', font=font14, fill=0)  # Black text
 
 def main():
-    time.sleep(60)
+    time.sleep(30)
     logging.info("Rack Panel ePaper")
 
     # Initialize e-Paper display
@@ -286,7 +295,7 @@ def main():
     try:
         while True:
             # Fetch data
-            speedDown, speedUp, stat, ip_now, total_online, important_down, uptime_now = fetch_data()
+            speedDown, speedUp, stat, ip_now, total_online, important_down, uptime_now, now = fetch_data()
 
             # Create clean black and red frames
             image_black = Image.open(os.path.join(IMAGE_DIR, 'domotz_b.bmp'))
@@ -303,7 +312,8 @@ def main():
                 stat,
                 'c',
                 ip_now,
-                uptime_now
+                uptime_now,
+                now
             )
             draw_on_image(image_black, image_red, data, fonts)
 
@@ -313,7 +323,7 @@ def main():
             epd.sleep()
 
             # Sleep for 30 minutes (1800 seconds)
-            time.sleep(1740)
+            time.sleep(1770)
 
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt, exiting.")
